@@ -8,6 +8,10 @@ export default function Index() {
   const handleNewPress = () =>{
 
   }
+  
+  const handleFloatingButtonPress = () =>{
+
+  }
 
   return (
      <Box w={'full'} p={6} >
@@ -40,8 +44,9 @@ export default function Index() {
        
         <Pressable onPress={() => handleNewPress()}>
         {({ isHovered, isFocused, isPressed }) => {
-          return (
-       <Box   w={'full'} h={20} border={1} p={1} bg={isPressed ? '#fff' : isHovered ? '#fff' : '#fff'} style={{ transform: [{ scale: isPressed ? 0.96 : 1 }] }}>
+            
+            return (
+       <Box   w={'full'} h={20} border={1} borderColor="black" p={1} bg={isPressed ? '#fff' : isHovered ? '#fff' : '#fff'} style={{ transform: [{ scale: isPressed ? 0.96 : 1 }] }}>
           <HStack h={'full'}  borderTopLeftRadius={15} borderBottomLeftRadius={15}>
             <Box h={'full'} w={2} bg={'#04B2D9'} borderTopLeftRadius={15} borderBottomLeftRadius={15}></Box>
            <VStack p={2}>
@@ -59,7 +64,27 @@ export default function Index() {
 
       </Stack>
 
+      <Pressable
+        position="absolute"
+        bottom={6}
+        right={6}
+        zIndex={10}
+        onPress={handleFloatingButtonPress}
+      >
+        {({ isPressed, isHovered }) => (
+          <Box
+            bg={isPressed || isHovered ? 'blue.600' : 'blue.500'}
+            borderRadius="full"
+            p={3}
+            style={{ transform: [{ scale: isPressed ? 0.96 : 1 }] }}
+          >
+            <Icon as={MaterialIcons} name="add" color="white" size={6} />
+          </Box>
+        )}
+      </Pressable>
     </Box>
+
+    
   );
 }
 
