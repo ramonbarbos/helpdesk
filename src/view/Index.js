@@ -1,8 +1,14 @@
 import { StatusBar } from 'expo-status-bar';
 import { FontAwesome , Entypo, MaterialIcons } from '@expo/vector-icons';
-import {  Box, Text,Center, Input, Heading, FormControl, VStack, Icon,Button, Checkbox, HStack,Image, Stack} from "native-base";
+import {  Box, Text,Center, Input, Heading, FormControl, VStack, Icon,Button, Checkbox, HStack,Image, Pressable,Stack} from "native-base";
 
 export default function Index() {
+
+
+  const handleNewPress = () =>{
+
+  }
+
   return (
      <Box w={'full'} p={6} >
 
@@ -32,8 +38,11 @@ export default function Index() {
           <Heading size={'sm'}>0</Heading>
         </HStack>
        
-       <Box   w={'full'} h={20} >
-          <HStack h={'full'} bg={'light.100'} borderTopLeftRadius={15} borderBottomLeftRadius={15}>
+        <Pressable onPress={() => handleNewPress()}>
+        {({ isHovered, isFocused, isPressed }) => {
+          return (
+       <Box   w={'full'} h={20} border={1} p={1} bg={isPressed ? '#fff' : isHovered ? '#fff' : '#fff'} style={{ transform: [{ scale: isPressed ? 0.96 : 1 }] }}>
+          <HStack h={'full'}  borderTopLeftRadius={15} borderBottomLeftRadius={15}>
             <Box h={'full'} w={2} bg={'#04B2D9'} borderTopLeftRadius={15} borderBottomLeftRadius={15}></Box>
            <VStack p={2}>
               <Heading size={'sm'}>#1</Heading>
@@ -44,6 +53,9 @@ export default function Index() {
               
           </HStack>
        </Box>
+              );
+            }}
+          </Pressable>
 
       </Stack>
 
