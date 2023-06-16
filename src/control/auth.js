@@ -11,7 +11,7 @@ function AuthProvider({ children }) {
   async function logar(id, login, senha) {
     if (login !== "" && senha !== "") {
       try {
-        const response = await fetch(`http://10.0.0.120/apiRest/usuarios/listar/${id}`);
+        const response = await fetch(`http://10.0.0.120/apiHelpdesk/usuarios/listar/${id}`);
         const data = await response.json();
 
         if (data.tipo === 'sucesso') {
