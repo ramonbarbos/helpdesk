@@ -8,6 +8,7 @@ import Login from './src/view/Login';
 import Index from './src/view/Index';
 
 import AuthProvider from './src/control/auth'; // Importe o AuthProvider
+import NewChamado from './src/view/NewChamado';
 
 const Stack = createStackNavigator();
 
@@ -20,6 +21,11 @@ function App() {
             <Stack.Screen 
                 name="Index"
                 component={Index}
+                options={{ headerShown: false }}
+              />
+               <Stack.Screen 
+                name="Novo Chamado"
+                component={NewChamado}
                 options={{ headerShown: false }}
               />
               <Stack.Screen 
