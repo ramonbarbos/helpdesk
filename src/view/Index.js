@@ -11,6 +11,8 @@ export default function Index() {
   const [aberto, setAberto] = useState([]);
   const [fechado, setFechado] = useState([]);
   const [chamadosAbertos, setChamadosAbertos] = useState(true); // Estado para controlar a exibição de chamados abertos ou fechados
+  const [quantidadeChamados, setQuantidadeChamados] = useState(0); // Estado para controlar a quantidade de chamados
+
   const fetchAberto = async () => {
     const url = `http://10.0.0.120/apiHelpdesk/chamado/aberto`;
     try {
@@ -18,9 +20,13 @@ export default function Index() {
       const responseData = await response.json();
 
       if (responseData && responseData.resposta) {
-        setAberto(responseData.resposta);
+    
        
-        
+        if (responseData.tipo === "sucesso" ) {
+          setAberto(responseData.resposta);
+        }else if(responseData.tipo === "erro"){
+          console.log('sem registro')
+        }
       }
     } catch (error) {
       console.error(error);
@@ -33,9 +39,9 @@ export default function Index() {
       const response = await fetch(url);
       const responseData = await response.json();
 
-      if (responseData && responseData.resposta) {
+      if (responseData.tipo === "sucesso" ) {
         setFechado(responseData.resposta);
-      }else{
+      }else if(responseData.tipo === "erro"){
         console.log('sem registro')
       }
     } catch (error) {
@@ -75,8 +81,17 @@ export default function Index() {
       }
     }, 5000);
 
+
     return () => clearInterval(intervalId);
+    
   }, [chamadosAbertos]);
+
+  useEffect(() => {
+    // Atualiza a quantidade de chamados com base no estado aberto ou fechado
+    const quantidade = chamadosAbertos ? aberto.length : fechado.length;
+    setQuantidadeChamados(quantidade);
+  }, [aberto, fechado, chamadosAbertos]);
+
 
   const renderUserItem = ({ item }) => (
     <Box>
@@ -86,7 +101,7 @@ export default function Index() {
            
            
            
-                <HStack h={'full'} borderTopLeftRadius={15} borderBottomLeftRadius={15}>
+           <HStack h={'full'} borderTopLeftRadius={15} borderBottomLeftRadius={15}>
             <Box h={'full'} w={2} bg={chamadosAbertos ? '#04B2D9' : '#CF0620'} borderTopLeftRadius={15} borderBottomLeftRadius={15}></Box>
               <VStack p={2}>
                 <Heading size={'sm'}>{item.id}</Heading>
@@ -131,16 +146,21 @@ export default function Index() {
         </HStack>
       </Stack>
 
-      <Stack h={'60%'}>
+      <Stack h={'60%'} >
         <HStack justifyContent={'space-between'} w={'full'}>
           <Heading size={'sm'}>Chamados</Heading>
-          <Heading size={'sm'}>0</Heading>
+          <Heading size={'sm'}>{quantidadeChamados}</Heading>
         </HStack>
-        <FlatList
-          data={chamadosAbertos ? aberto : fechado} // Exibe a lista de chamados abertos ou fechados de acordo com o estado
-          renderItem={renderUserItem}
-          keyExtractor={(item) => item.id.toString()}
-        />
+
+          <Box mt={4} mb={9}>
+          <FlatList
+                    data={chamadosAbertos ? aberto : fechado} // Exibe a lista de chamados abertos ou fechados de acordo com o estado
+                    renderItem={renderUserItem}
+                    keyExtractor={(item) => item.id.toString()}
+                  />
+          </Box>
+      
+
       </Stack>
 
       <Pressable
