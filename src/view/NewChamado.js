@@ -1,36 +1,73 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { useNavigation } from '@react-navigation/native';
 
-import {  Box, Center, Input, Heading, FormControl, VStack, Icon,Button, Checkbox, HStack,Image} from "native-base";
+import {  Box, Center, Input, Heading, FormControl, VStack, Icon,Button, Checkbox, HStack,Image, Select, CheckIcon, TextArea} from "native-base";
 
 import { FontAwesome , Entypo, MaterialIcons } from '@expo/vector-icons';
 
+import SelectUsuario from '../model/SelectUsuario';
+import SelectCliente from '../model/SelectCliente';
+import SelectCategoria from '../model/SelectCategoria';
 
 const NewChamado = () => {
-  const [login, setLogin] = useState('');
-  const [senha, setSenha] = useState('');
-  const [nome, setNome] = useState('');
-  const [cidade, setCidade] = useState(null);
+  const [entidade, setEntidade] = useState('');
+  const [cliente, setCliente] = useState('');
+  const [usuario, setUsuario] = useState('');
+
 
   const navigation = useNavigation();
 
+  const handleSelectCategoria = async (item) =>{
+    setCliente(item.id)
+    console.log(item)
+    handleSelectEntidade(cliente)
+  }
 
+  const handleSelectCliente = async (item) =>{
+    setCliente(item.id)
+    console.log(item)
+    handleSelectEntidade(cliente)
+  }
+
+  const handleSelectEntidade = async (item) =>{
+    let id = item
+    const url = `http://10.0.0.120/apiHelpdesk/cliente/entidade/${id}`;
+
+ 
+  
+      try {
+        const response = await fetch(url);
+        const responseData = await response.json();
+
+        if (responseData && responseData.resposta) {
+          console.log(responseData.resposta)
+          setEntidade(responseData.resposta);
+        }
+      } catch (error) {
+        console.error(error);
+      }
   
 
 
+  }
+
+  const handleSelectUsuario = async (item) =>{
+    setUsuario(item.id)
+    console.log(item)
+  }
+
+
+
   const handleRegister = async () => {
-    console.log(login, senha,nome,cidade);
+    //console.log(login, senha,nome,cidade);
 
     try {
       const requestBody = {
-        login: login,
-        senha: senha,
-        nome: nome,
-        cidade: cidade
+       
       };
 
-      const response = await fetch('http://10.0.0.120/apiRest/usuarios/cadastrar', {
+      const response = await fetch('http://10.0.0.120/apiHelpdesk/usuarios/cadastrar', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -43,7 +80,7 @@ const NewChamado = () => {
 
 
       if (responseData.tipo == 'sucesso') {
-        alert("Cadastrado. Faça seu Login!")
+        alert("Novo Chamado Cadastrado!")
         navigation.navigate('Login')
       } else {
         console.log('Request failed:', response.status);
@@ -65,58 +102,55 @@ const NewChamado = () => {
         </Heading>
         <Box width="full">
 
-          <FormControl>
-            <Input
-              placeholder='Login'
-              size="md" variant="underlined"
-              mt={5}
-              InputLeftElement={
-                <Icon
-                  as={<FontAwesome name="user" color="black" />}
-                  size={5}
-                  ml={2}
-                />
-                  }
-                  onChangeText={setLogin}
-            />
-          </FormControl>
+       
 
-          <FormControl>
-            <Input
-              placeholder='Senha'
-              size="md" variant="underlined"
+       <SelectCategoria onValueChange={handleSelectCategoria}/>
+
+          <SelectCliente  onValueChange={handleSelectCliente}/>
+                
+          <Input
+              disabled
+              placeholder='Entidade'
+              size="md" 
               mt={5}
-              InputLeftElement={
-                <Icon
-                  as={<FontAwesome name="lock" color="black" />}
-                  size={5}
-                  ml={2}
-                />
-                  }
-                  onChangeText={setSenha}
+              value={entidade.entidade}
+         
+              //onChangeText={}
             />
 
-      </FormControl>
-          <FormControl>
-            <Input
-              placeholder='Nome'
-              size="md" variant="underlined"
-              mt={5}
-              InputLeftElement={
-                <Icon
-                  as={<FontAwesome name="tag" color="black" />}
-                  size={5}
-                  ml={2}
-                />
-                  }
-                  onChangeText={setNome}
-            />
+          <SelectUsuario onValueChange={handleSelectUsuario}/>
+
+          <Box mt={5}> 
+            <Select
+             
+              minWidth="200"
+              accessibilityLabel="Choose Service"
+              placeholder="Status"
+              _selectedItem={{
+                bg: 'teal.600',
+                endIcon: <CheckIcon size="5" />,
+              }}
+              mt={1}
+              
+            >
+             
+                <Select.Item label="Aberto" value="a"/>
+                <Select.Item label="Fechado" value="f"/>
             
+            </Select>
+          </Box>
+
+          <FormControl>
+            <Input
+              placeholder='Titulo'
+              size="md"
+              mt={5}
+              //onChangeText={setLogin}
+            />
           </FormControl>
-
-
           
-            
+          <TextArea mt={5} h={20} placeholder="Descrição" w="100%"  />
+          
           <Button size="sm" mt={7}  variant="subtle"  onPress={() => handleRegister()} >Criar</Button>
 
         </Box>

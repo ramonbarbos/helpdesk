@@ -210,9 +210,9 @@ export default function Index() {
           <Modal.Body>
             {chamadoSelecionado && (
               <>
-                <Text>{chamadoSelecionado.id}</Text>
-                <Text>{chamadoSelecionado.titulo}</Text>
-                <Text>{chamadoSelecionado.descricao}</Text>
+                <Button  onPress={() => console.log('Detalhes')}>Detalhes</Button>
+                <Button mt={1} onPress={() => console.log('Acompanhamento')}>Acompanhamento</Button>
+                <Button mt={1} onPress={() => console.log('Fechar Chamado')}>Fechar</Button>
               </>
             )}
           </Modal.Body>
