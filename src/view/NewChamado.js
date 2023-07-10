@@ -32,10 +32,9 @@ const NewChamado = () => {
 
   const handleSelectEntidade = async (item) =>{
     let id = item
+
     const url = `http://10.0.0.120/apiHelpdesk/cliente/entidade/${id}`;
 
- 
-  
       try {
         const response = await fetch(url);
         const responseData = await response.json();
@@ -57,11 +56,8 @@ const NewChamado = () => {
     console.log(item)
   }
 
-
-
   const handleRegister = async () => {
-    //console.log(login, senha,nome,cidade);
-
+  
     try {
       const requestBody = {
        
@@ -81,7 +77,7 @@ const NewChamado = () => {
 
       if (responseData.tipo == 'sucesso') {
         alert("Novo Chamado Cadastrado!")
-        navigation.navigate('Login')
+       // navigation.navigate('Login')
       } else {
         console.log('Request failed:', response.status);
       }
@@ -98,7 +94,7 @@ const NewChamado = () => {
 
       <VStack width="full" p={10}>
         <Heading color="primary.500">
-           Novo Chamado
+           Novo Registro
         </Heading>
         <Box width="full">
 
@@ -109,12 +105,11 @@ const NewChamado = () => {
           <SelectCliente  onValueChange={handleSelectCliente}/>
                 
           <Input
-              disabled
+              variant="filled"
               placeholder='Entidade'
               size="md" 
               mt={5}
               value={entidade.entidade}
-         
               //onChangeText={}
             />
 
@@ -122,7 +117,6 @@ const NewChamado = () => {
 
           <Box mt={5}> 
             <Select
-             
               minWidth="200"
               accessibilityLabel="Choose Service"
               placeholder="Status"
