@@ -11,23 +11,27 @@ import SelectCliente from '../model/SelectCliente';
 import SelectCategoria from '../model/SelectCategoria';
 
 const NewChamado = () => {
-  const [entidade, setEntidade] = useState('');
+  const [categoria, setCategoria] = useState('');
   const [cliente, setCliente] = useState('');
+  const [entidade, setEntidade] = useState('');
   const [usuario, setUsuario] = useState('');
+  const [status, setStatus] = useState('');
+  const [titulo, setTitulo] = useState('');
+  const [descricao, setDescricao] = useState('');
 
 
   const navigation = useNavigation();
 
   const handleSelectCategoria = async (item) =>{
-    setCliente(item.id)
     console.log(item)
+    setCategoria(item.nome)
     handleSelectEntidade(cliente)
   }
 
   const handleSelectCliente = async (item) =>{
-    setCliente(item.id)
     console.log(item)
-    handleSelectEntidade(cliente)
+    setCliente(item)
+    handleSelectEntidade(item.id)
   }
 
   const handleSelectEntidade = async (item) =>{
@@ -52,18 +56,30 @@ const NewChamado = () => {
   }
 
   const handleSelectUsuario = async (item) =>{
-    setUsuario(item.id)
+    setUsuario(item)
+    console.log(item)
+  }
+  const handleSelectStatus = async (item) =>{
+    setStatus(item)
     console.log(item)
   }
 
   const handleRegister = async () => {
-  
     try {
       const requestBody = {
-       
+        categoria: categoria,
+        id_usuario: usuario.id,
+        nome_usuario: usuario.nome,
+        id_cliente: cliente.id,
+        nome_cliente: cliente.nome,
+        entidade: entidade,
+        status: status,
+        titulo: titulo,
+        descricao: descricao,
       };
 
-      const response = await fetch('http://10.0.0.120/apiHelpdesk/usuarios/cadastrar', {
+      console.log(requestBody)
+      const response = await fetch('http://10.0.0.120/apiHelpdesk/chamado/cadastrar', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -74,10 +90,9 @@ const NewChamado = () => {
       const responseData = await response.json();
       console.log('Resposta da API:', responseData);
 
-
-      if (responseData.tipo == 'sucesso') {
-        alert("Novo Chamado Cadastrado!")
-       // navigation.navigate('Login')
+      if (responseData.tipo === 'sucesso') {
+        alert("Novo Chamado Cadastrado!");
+        // navigation.navigate('Login')
       } else {
         console.log('Request failed:', response.status);
       }
@@ -85,7 +100,6 @@ const NewChamado = () => {
       console.error('Erro:', error);
     }
   };
-
 
 
   return (
@@ -125,7 +139,7 @@ const NewChamado = () => {
                 endIcon: <CheckIcon size="5" />,
               }}
               mt={1}
-              
+              onValueChange={handleSelectStatus}
             >
              
                 <Select.Item label="Aberto" value="a"/>
@@ -139,11 +153,11 @@ const NewChamado = () => {
               placeholder='Titulo'
               size="md"
               mt={5}
-              //onChangeText={setLogin}
+              onChangeText={setTitulo}
             />
           </FormControl>
           
-          <TextArea mt={5} h={20} placeholder="Descrição" w="100%"  />
+          <TextArea mt={5} h={20} placeholder="Descrição" w="100%" onChangeText={setDescricao} />
           
           <Button size="sm" mt={7}  variant="subtle"  onPress={() => handleRegister()} >Criar</Button>
 
