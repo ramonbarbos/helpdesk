@@ -4,6 +4,9 @@ import React, { useState, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { Box, Text,  Heading, VStack, Icon, Button,  HStack,Pressable, Stack, FlatList, Modal } from 'native-base';
 
+import { AuthContext } from '../control/auth';
+
+
 export default function Index() {
   const navigation = useNavigation();
   const [aberto, setAberto] = useState([]);
@@ -14,6 +17,8 @@ export default function Index() {
   const [chamadoSelecionado, setChamadoSelecionado] = useState(null);
   const initialRef = React.useRef(null);
   const finalRef = React.useRef(null);
+  const [user, setUser] = useState('');
+
 
   const fetchAberto = async () => {
     const url = 'http://10.0.0.120/apiHelpdesk/chamado/aberto';
@@ -68,6 +73,55 @@ export default function Index() {
     setChamadosAbertos(false); // Atualiza o estado para exibir chamados fechados
   };
 
+  const handleUpStatusFechado = async (item) => {
+    const url = `http://10.0.0.120/apiHelpdesk/chamado/upstatus/${item}`;
+  console.log(item)
+    try {
+      const response = await fetch(url, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ status: 'f' }),
+      });
+  
+      const responseData = await response.json();
+  
+      if (responseData.tipo === 'sucesso') {
+        console.log('Status atualizado para "Fechado"');
+      } else if (responseData.tipo === 'erro') {
+        console.log('Erro ao atualizar o status');
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  
+  const handleUpStatusAberto = async (item) => {
+    const url = `http://10.0.0.120/apiHelpdesk/chamado/upstatus/${item}`;
+    console.log(item);
+  
+    try {
+      const response = await fetch(url, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ status: 'a' }),
+      });
+  
+      const responseData = await response.json();
+  
+      if (responseData.tipo === 'sucesso') {
+        console.log('Status atualizado para "Aberto"');
+      } else if (responseData.tipo === 'erro') {
+        console.log('Erro ao atualizar o status');
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  
   useEffect(() => {
     if (chamadosAbertos) {
       fetchAberto();
@@ -81,7 +135,7 @@ export default function Index() {
       } else {
         fetchFechado();
       }
-    }, 5000);
+    }, 2000);
 
     return () => clearInterval(intervalId);
   }, [chamadosAbertos]);
@@ -210,9 +264,13 @@ export default function Index() {
           <Modal.Body>
             {chamadoSelecionado && (
               <>
-                <Button  onPress={() => console.log('Detalhes')}>Detalhes</Button>
+                <Button onPress={() => console.log('Detalhes')}>Detalhes</Button>
                 <Button mt={1} onPress={() => console.log('Acompanhamento')}>Acompanhamento</Button>
-                <Button mt={1} onPress={() => console.log('Fechar Chamado')}>Fechar</Button>
+                {chamadoSelecionado.status === 'a' ? (
+                  <Button mt={1} onPress={() => handleUpStatusFechado(chamadoSelecionado.id)}>Fechar</Button>
+                ) : (
+                  <Button mt={1} onPress={() => handleUpStatusAberto(chamadoSelecionado.id)}>Reabrir</Button>
+                )}
               </>
             )}
           </Modal.Body>
