@@ -9,6 +9,8 @@ import Index from './src/view/Index';
 
 import AuthProvider from './src/control/auth'; // Importe o AuthProvider
 import NewChamado from './src/view/NewChamado';
+import Detalhes from './src/view/DetalhesChamado';
+import Acompanhamento from './src/view/Acompanhamento';
 
 const Stack = createStackNavigator();
 
@@ -27,6 +29,16 @@ function App() {
                 name="Novo Chamado"
                 component={NewChamado}
                 options={{ headerShown: false }}
+              />
+               <Stack.Screen 
+                name="DetalhesChamado"
+                component={Detalhes}
+                options={{ headerShown: true }}
+              />
+              <Stack.Screen 
+                name="Acompanhamento"
+                component={Acompanhamento}
+                options={{ headerShown: true }}
               />
               <Stack.Screen 
                 name="Login"

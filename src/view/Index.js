@@ -73,6 +73,18 @@ export default function Index() {
     setChamadosAbertos(false); // Atualiza o estado para exibir chamados fechados
   };
 
+  const handleDetalhes = (item) => {
+    navigation.navigate('DetalhesChamado', { id: item }); // Substitua 123 pelo ID real do chamado
+    setModalVisible(false)
+
+  };
+
+  const handleAcompanhamento = (item) => {
+    navigation.navigate('Acompanhamento', { id: item }); // Substitua 123 pelo ID real do chamado
+    setModalVisible(false)
+
+  };
+
   const handleUpStatusFechado = async (item) => {
     const url = `http://10.0.0.120/apiHelpdesk/chamado/upstatus/${item}`;
   console.log(item)
@@ -89,6 +101,7 @@ export default function Index() {
   
       if (responseData.tipo === 'sucesso') {
         console.log('Status atualizado para "Fechado"');
+        setModalVisible(false)
       } else if (responseData.tipo === 'erro') {
         console.log('Erro ao atualizar o status');
       }
@@ -114,6 +127,7 @@ export default function Index() {
   
       if (responseData.tipo === 'sucesso') {
         console.log('Status atualizado para "Aberto"');
+        setModalVisible(false)
       } else if (responseData.tipo === 'erro') {
         console.log('Erro ao atualizar o status');
       }
@@ -121,7 +135,7 @@ export default function Index() {
       console.error(error);
     }
   };
-  
+
   useEffect(() => {
     if (chamadosAbertos) {
       fetchAberto();
@@ -264,8 +278,8 @@ export default function Index() {
           <Modal.Body>
             {chamadoSelecionado && (
               <>
-                <Button onPress={() => console.log('Detalhes')}>Detalhes</Button>
-                <Button mt={1} onPress={() => console.log('Acompanhamento')}>Acompanhamento</Button>
+                <Button onPress={() => handleDetalhes(chamadoSelecionado.id)}>Detalhes</Button>
+                <Button mt={1} onPress={() => handleAcompanhamento(chamadoSelecionado.id)}>Acompanhamento</Button>
                 {chamadoSelecionado.status === 'a' ? (
                   <Button mt={1} onPress={() => handleUpStatusFechado(chamadoSelecionado.id)}>Fechar</Button>
                 ) : (
