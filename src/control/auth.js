@@ -16,6 +16,7 @@ function AuthProvider({ children }) {
 
         if (data.tipo === 'sucesso') {
           const formUsuario = data.resposta;
+          console.log(formUsuario)
           setUser(formUsuario); // Atualize o estado 'user' com os dados retornados da API
 
         

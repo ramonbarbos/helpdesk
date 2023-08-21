@@ -11,6 +11,7 @@ import AuthProvider from './src/control/auth'; // Importe o AuthProvider
 import NewChamado from './src/view/NewChamado';
 import Detalhes from './src/view/DetalhesChamado';
 import Acompanhamento from './src/view/Acompanhamento';
+import Perfil from './src/view/Perfil';
 
 const Stack = createStackNavigator();
 
@@ -20,6 +21,11 @@ function App() {
       <NativeBaseProvider>
       <AuthProvider> 
             <Stack.Navigator>
+            <Stack.Screen 
+                name="Login"
+                component={Login}
+                options={{ headerShown: false }}
+              />
             <Stack.Screen 
                 name="Index"
                 component={Index}
@@ -36,15 +42,16 @@ function App() {
                 options={{ headerShown: true }}
               />
               <Stack.Screen 
+                name="Perfil"
+                component={Perfil}
+                options={{ headerShown: true }}
+              />
+              <Stack.Screen 
                 name="Acompanhamento"
                 component={Acompanhamento}
                 options={{ headerShown: true }}
               />
-              <Stack.Screen 
-                name="Login"
-                component={Login}
-                options={{ headerShown: false }}
-              />
+             
              
              
             </Stack.Navigator>

@@ -1,10 +1,11 @@
 import { StatusBar } from 'expo-status-bar';
 import { FontAwesome, Entypo, MaterialIcons } from '@expo/vector-icons';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { Box, Text,  Heading, VStack, Icon, Button,  HStack,Pressable, Stack, FlatList, Modal } from 'native-base';
 
 import { AuthContext } from '../control/auth';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 
 export default function Index() {
@@ -17,8 +18,9 @@ export default function Index() {
   const [chamadoSelecionado, setChamadoSelecionado] = useState(null);
   const initialRef = React.useRef(null);
   const finalRef = React.useRef(null);
-  const [user, setUser] = useState('');
+ 
 
+  const { user } = useContext(AuthContext);
 
   const fetchAberto = async () => {
     const url = 'http://10.0.0.120/apiHelpdesk/chamado/aberto';
@@ -71,6 +73,13 @@ export default function Index() {
 
   const handleClosePress = () => {
     setChamadosAbertos(false); // Atualiza o estado para exibir chamados fechados
+  };
+
+  const handlePerfil = (item) => {
+    console.log(user.id)
+   navigation.navigate('Perfil', { id: item }); // Substitua 123 pelo ID real do chamado
+    
+
   };
 
   const handleDetalhes = (item) => {
@@ -199,7 +208,9 @@ export default function Index() {
           <Heading>Helpdesk</Heading>
           <Text>Registre o chamado!</Text>
         </VStack>
-        <FontAwesome name="user-circle" size={35} color="black" />
+        <TouchableOpacity  onPress={() => handlePerfil(user.id)}> 
+         <FontAwesome name="user-circle" size={35} color="black" />
+        </TouchableOpacity>
       </HStack>
 
       <Stack h="20%" justifyContent="center" alignItems="center">

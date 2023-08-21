@@ -65,11 +65,7 @@ const Acompanhamento = () => {
       const response = await fetch(url);
       const responseData = await response.json();
 
-      if (responseData.tipo === 'sucesso') {
-        setMensagensEnviadas([...mensagensEnviadas, ...responseData.resposta.map(item => ({ message: item.mensagem, sender: 'other' }))]);
-      } else if (responseData.tipo === 'erro') {
-        console.log('sem registro');
-      }
+      
     } catch (error) {
       console.error(error);
     }
@@ -105,31 +101,7 @@ const Acompanhamento = () => {
           </Box>
         )}
 
-        {/* Display messages */}
-        {mensagensEnviadas.map((mensagemEnviada, index) => (
-          <Box
-            key={index}
-            bg={'blue.100'}
-            p={2}
-            m={2}
-            alignSelf={'flex-end' }
-            borderRadius={10}
-          >
-            <VStack>
-              <Box>
-                <Heading color="black">
-                  {mensagemEnviada.sender === 'user' ? 'Você' : 'Usuário'}
-                </Heading>
-              </Box>
-
-              <Box>
-                <Text color="black">
-                  {mensagemEnviada.message}
-                </Text>
-              </Box>
-            </VStack>
-          </Box>
-        ))}
+       
 
       </VStack>
 
