@@ -44,44 +44,51 @@ const Perfil = () => {
       if (!result.cancelled && result.assets.length > 0) {
         const selectedImage = result.assets[0];
   
-        const imageName = selectedImage.uri.split('/').pop(); // Extrai o nome do arquivo da URI
+        const response = await fetch(selectedImage.uri);
+        const blob = await response.blob();
   
-        const requestData = {
-          imagem: imageName,
-        };
+        const reader = new FileReader();
+        reader.onload = async () => {
+          const base64data = reader.result.split(',')[1]; // Extrai apenas a parte base64
+  
+          const requestData = {
+            imagem: base64data,
+          };
+  
+          const apiResponse = await fetch(`http://10.0.0.120/apiHelpdesk/usuarios/upimagem/${user.id}`, {
+            method: 'PUT',
+            body: JSON.stringify(requestData),
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
+  
+          const responseData = await apiResponse.json();
+          console.log(responseData);
 
-        console.log(requestData)
+          // Atualize a imagem do perfil após o upload bem-sucedido
+          fetchProfileImage();
+        };
   
-        const response = await fetch(`http://10.0.0.120/apiHelpdesk/usuarios/upimagem/${user.id}`, {
-          method: "PUT",
-          body: JSON.stringify(requestData),
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-  
-        const responseData = await response.json();
-        console.log(responseData);
+        reader.readAsDataURL(blob);
       }
     } catch (error) {
       console.error('Erro ao fazer upload da imagem:', error);
     }
   };
   
-  
-  
   return (
     <Center>
       <Box>
-        <Stack mt={5} color="black">
-          <Image size={150} borderRadius={100} source={{ uri: profileImage || "https://wallpaperaccess.com/full/317501.jpg" }} alt="Alternate Text" />
-          <Heading mt={1}>{user.nome}</Heading>
+        <Stack mt={5} color="black" >
+          <Image size={150}   borderRadius={100} source={{ uri: profileImage || "https://wallpaperaccess.com/full/317501.jpg" }} alt="Alternate Text" />
+          <Heading mt={1}>{user.nome} {user.sobrenome}</Heading>
         </Stack>
   
         <Box alignItems={'center'} w={'100%'}>
           <VStack>
             <Divider bg={'black'} />
-            <TouchableOpacity>
+            <TouchableOpacity onPress={handleImageUpload}>
               <Box w={'100%'} h={55} justifyContent={'center'}>
                 <Text ><FontAwesome5 name="user-edit" size={20} color="black" />  Alterar foto Perfil </Text>
               </Box>
@@ -93,11 +100,7 @@ const Perfil = () => {
               </Box>
             </TouchableOpacity>
             <Divider bg={'black'} />
-            <TouchableOpacity onPress={handleImageUpload}>
-              <Box w={'100%'} h={55}  justifyContent={'center'}>
-                <Text>Upload Imagem</Text>
-              </Box>
-            </TouchableOpacity>
+          
           </VStack>
         </Box>
       </Box>
