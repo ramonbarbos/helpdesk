@@ -37,6 +37,12 @@ function AuthProvider({ children }) {
     setUser({}); // Redefina o estado 'user' para um objeto vazio
   }
 
+  function logout() {
+    setUser({});
+    navigation.navigate("Login");
+    
+  }
+
   return (
     <AuthContext.Provider value={{ logar, user, resetData }}>
       {children}

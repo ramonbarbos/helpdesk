@@ -2,7 +2,7 @@ import { StatusBar } from 'expo-status-bar';
 import { FontAwesome, Entypo, MaterialIcons } from '@expo/vector-icons';
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigation } from '@react-navigation/native';
-import { Box, Text,  Heading, VStack, Icon, Button,  HStack,Pressable, Stack, FlatList, Modal } from 'native-base';
+import { Box, Text,  Heading, VStack, Icon, Button,  HStack,Pressable, Stack, FlatList, Modal , Image} from 'native-base';
 
 import { AuthContext } from '../control/auth';
 import { TouchableOpacity } from 'react-native-gesture-handler';
@@ -16,6 +16,8 @@ export default function Index() {
   const [quantidadeChamados, setQuantidadeChamados] = useState(0);
   const [modalVisible, setModalVisible] = useState(false);
   const [chamadoSelecionado, setChamadoSelecionado] = useState(null);
+  const [profileImage, setProfileImage] = useState(null);
+
   const initialRef = React.useRef(null);
   const finalRef = React.useRef(null);
  
@@ -163,7 +165,19 @@ export default function Index() {
     return () => clearInterval(intervalId);
   }, [chamadosAbertos]);
 
+  const fetchProfileImage = async () => {
+    try {
+      const response = await fetch(`http://10.0.0.120/apiHelpdesk/usuarios/fotoperfil/${user.id}`);
+      const imageUri = response.url;
+      setProfileImage(imageUri);
+    } catch (error) {
+      console.error('Erro ao buscar a imagem de perfil', error);
+    }
+  };
+  
+
   useEffect(() => {
+    fetchProfileImage();
     // Atualiza a quantidade de chamados com base no estado aberto ou fechado
     const quantidade = chamadosAbertos ? aberto.length : fechado.length;
     setQuantidadeChamados(quantidade);
@@ -208,9 +222,15 @@ export default function Index() {
           <Heading>Helpdesk</Heading>
           <Text>Registre o chamado!</Text>
         </VStack>
+
         <TouchableOpacity  onPress={() => handlePerfil(user.id)}> 
-         <FontAwesome name="user-circle" size={35} color="black" />
+          {profileImage ? (
+            <Image size={35} borderRadius={100} source={{ uri: profileImage }} alt="Profile Image" />
+          ) : (
+            <FontAwesome name="user-circle" size={35} color="black" />
+          )}
         </TouchableOpacity>
+
       </HStack>
 
       <Stack h="20%" justifyContent="center" alignItems="center">

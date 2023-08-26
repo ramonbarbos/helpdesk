@@ -4,13 +4,12 @@ import { TouchableOpacity } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
 
-import { FontAwesome5 } from '@expo/vector-icons';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons,FontAwesome , MaterialCommunityIcons , FontAwesome5} from '@expo/vector-icons';
 
 import { AuthContext } from '../control/auth';
 
-const Perfil = () => {
-  const { user } = useContext(AuthContext);
+const Perfil = ({navigation}) => {
+  const { user, resetData } = useContext(AuthContext);
   const route = useRoute();
   
   const [profileImage, setProfileImage] = useState(null);
@@ -27,10 +26,6 @@ const Perfil = () => {
       console.error('Erro ao buscar a imagem de perfil', error);
     }
   };
-  
-  useEffect(() => {
-    fetchProfileImage();
-  }, []);
   
   const handleImageUpload = async () => {
     try {
@@ -76,12 +71,27 @@ const Perfil = () => {
       console.error('Erro ao fazer upload da imagem:', error);
     }
   };
+
+  const handleLogout = () => {
+    resetData(); // Redefine todos os dados
+    navigation.navigate('Login');
+  };
+
+  useEffect(() => {
+    fetchProfileImage();
+  }, []);
+  
+  
   
   return (
     <Center>
       <Box>
-        <Stack mt={5} color="black" >
-          <Image size={150}   borderRadius={100} source={{ uri: profileImage || "https://wallpaperaccess.com/full/317501.jpg" }} alt="Alternate Text" />
+        <Stack mt={5} color="black" alignItems={'center'}>
+          {profileImage ? (
+            <Image size={150} borderRadius={100} source={{ uri: profileImage }} alt="Profile Image" />
+          ) : (
+            <FontAwesome name="user-circle" size={150} color="black" />
+          )}
           <Heading mt={1}>{user.nome} {user.sobrenome}</Heading>
         </Stack>
   
@@ -100,7 +110,11 @@ const Perfil = () => {
               </Box>
             </TouchableOpacity>
             <Divider bg={'black'} />
-          
+            <TouchableOpacity onPress={handleLogout}>
+              <Box w={'100%'} h={55}  justifyContent={'center'}>
+                <Text><Ionicons name="exit" size={20} color="black" /> Logout</Text>
+              </Box>
+            </TouchableOpacity>
           </VStack>
         </Box>
       </Box>
